@@ -1,4 +1,5 @@
 import type { Asset } from "../../../shared/types";
+import { buildPyramid } from "../../projection/lib/mip";
 export async function decodeAsset(blob: Blob, name: string): Promise<Asset> {
   if (blob.size > 40 * 1024 * 1024)
     throw new Error("图片超过 40 MB，请先缩小后导入");
@@ -23,6 +24,7 @@ export async function decodeAsset(blob: Blob, name: string): Promise<Asset> {
       width: canvas.width,
       height: canvas.height,
       data,
+      mip: buildPyramid(data),
       thumbnail: thumb.toDataURL("image/jpeg", 0.7),
     };
   } finally {

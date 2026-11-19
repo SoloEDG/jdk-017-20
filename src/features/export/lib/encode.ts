@@ -11,6 +11,7 @@ export async function encodeImage(
   const ctx = canvas.getContext("2d")!;
   const s = {
     ...snapshot,
+    tier: settings.tier,
     edge: {
       ...snapshot.edge,
       transparent: settings.format === "png" && snapshot.edge.transparent,

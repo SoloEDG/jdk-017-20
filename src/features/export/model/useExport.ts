@@ -16,6 +16,7 @@ export function useExport(doc: StudioDocument) {
         asset: doc.asset,
         projection: { ...doc.projection },
         edge: { ...doc.edge },
+        tier: settings.tier,
       },
       options = { ...settings };
     try {

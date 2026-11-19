@@ -10,7 +10,12 @@ const settings = reactive<ExportSettings>({
   size: 2048,
   format: "png",
   quality: 0.92,
+  tier: "quality",
 });
+const tierHints = {
+  interactive: "各向同性过滤 · 每像素最多 2 次双线性求值，导出更快",
+  quality: "EWA 各向异性 · 每像素最多 16 次求值，栅栏与树叶无摩尔纹",
+} as const;
 const { busy, progress, message, download, cancel } = useExport(doc);
 </script>
 <template>
@@ -18,6 +23,24 @@ const { busy, progress, message, download, cancel } = useExport(doc);
     <div class="section-label">
       <span>05 / 导出作品</span><Download :size="16" />
     </div>
+    <label class="field-label" for="tier">过滤质量</label>
+    <div class="segmented small">
+      <button
+        id="tier"
+        :disabled="busy"
+        :class="{ active: settings.tier === 'interactive' }"
+        @click="settings.tier = 'interactive'"
+      >
+        交互优先</button
+      ><button
+        :disabled="busy"
+        :class="{ active: settings.tier === 'quality' }"
+        @click="settings.tier = 'quality'"
+      >
+        成品质量
+      </button>
+    </div>
+    <p class="mini">{{ tierHints[settings.tier] }}</p>
     <label class="field-label" for="size">输出尺寸</label
     ><select
       id="size"

@@ -13,7 +13,15 @@ import { usePreview } from "../model/usePreview";
 import { dragView, wheelZoom } from "../lib/gestures";
 const { doc } = defineProps<{ doc: StudioDocument }>();
 const canvas = ref<HTMLCanvasElement>();
-const { rendering } = usePreview(doc, canvas);
+const { rendering, phase } = usePreview(doc, canvas);
+const liveText = () =>
+  phase.value === "interactive"
+    ? "快速预览中"
+    : phase.value === "quality"
+      ? "补绘高质量"
+      : rendering.value
+        ? "正在渲染"
+        : "实时预览";
 const guides = ref(false);
 let start: { x: number; y: number; p: Projection } | null = null;
 function down(e: PointerEvent) {
@@ -44,7 +52,7 @@ function wheel(e: WheelEvent) {
         <span class="eyebrow">LIVE CANVAS</span>
         <h1>换个视角，世界很小。</h1>
       </div>
-      <span class="live"><i />{{ rendering ? "正在渲染" : "实时预览" }}</span>
+      <span class="live"><i />{{ liveText() }}</span>
     </div>
     <div class="canvas-area">
       <span class="corner-label"
@@ -68,7 +76,7 @@ function wheel(e: WheelEvent) {
         <div v-if="guides" class="crosshair" />
       </div>
       <div class="canvas-caption">
-        <span>STEREOGRAPHIC PROJECTION</span><span>600 × 600 · 预览</span>
+        <span>STEREOGRAPHIC PROJECTION</span><span>自适应足迹过滤 · 两档质量</span>
       </div>
     </div>
     <div class="viewport-toolbar">
